@@ -11,6 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+      - name: fix dependencies
+        run: npm audit fix
+        
       - name: Check out code
         uses: actions/checkout@v2
 
@@ -19,8 +23,7 @@ jobs:
         with:
           node-version: '16'  # 使用 Node.js 版本
 
-      - name: fix dependencies
-        run: npm audit fix
+
         
       - name: Install dependencies
         run: npm install
