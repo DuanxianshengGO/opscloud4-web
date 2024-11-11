@@ -11,8 +11,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Install nodejs
+        run: apt install nodejs
+
+      - name: Install npm
+        run: apt install nodejs
+        
       - name: Install dependencies
-        run: npm audit fix
+        run: apt-get install npm
         
       - name: Install dependencies
         run: npm install
