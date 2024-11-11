@@ -1,35 +1,51 @@
-name: CI
+name: Node.js CI
 
 on:
   push:
-    branches: [main] # 在推送到 main 分支时触发
+    branches: [main]  # 在推送到 main 分支时触发
   pull_request:
-    branches: [main] # 在对 main 分支发起的 PR 时触发
+    branches: [main]  # 在向 main 分支提交 PR 时触发
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    steps:
-      - name: Install nodejs
-        run: apt install nodejs
+    strategy:
+      matrix:
+        node-version: [14, 16, 18]  # 测试多个 Node.js 版本的兼容性
 
-      - name: Install npm
-        run: apt install nodejs
-        
-      - name: Install dependencies
-        run: apt-get install npm
-        
+    steps:
+      # 检出代码
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # 设置 Node.js 版本
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      # 配置 npm 缓存加速构建
+      - name: Cache npm modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ matrix.node-version }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ matrix.node-version }}
+
+      # 安装依赖
       - name: Install dependencies
         run: npm install
 
-     
-      
-      - name: Run build
-        run: npm run build:prod
 
+      # 运行构建任务
+      - name: Run build
+        run: npm run build:test
+
+      # 上传构建结果为构件，便于下载和查看
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2
         with:
           name: build-output
-          path: ./build  # 需要上传的构建产物路径
+          path: ./build  # 替换为实际构建文件夹
