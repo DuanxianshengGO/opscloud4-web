@@ -12,18 +12,6 @@ jobs:
 
     steps:
 
-      - name: fix dependencies
-        run: npm audit fix
-        
-      - name: Check out code
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'  # 使用 Node.js 版本
-
-
         
       - name: Install dependencies
         run: npm install
