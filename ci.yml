@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [main] # 在推送到 main 分支时触发
+  pull_request:
+    branches: [main] # 在对 main 分支发起的 PR 时触发
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'  # 使用 Node.js 版本
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run build
+        run: npm run build:prod
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-output
+          path: ./build  # 需要上传的构建产物路径
